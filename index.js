@@ -1,18 +1,19 @@
 const http = require('http');
-const fs = require('fs');
-const path = require('path');
 
-const server = http.createServer((req, res) => {
-    const filePath = path.join(__dirname, 'index.html');
-    fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end('Internal Server Error');
-            return;
-        }
+const server = http.createServer((req, res) => {fetch('https://moshema8.wixsite.com/ppctools/_functions/headlines')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
         res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-    });
+        res.end(data.html);
+    }).catch(err => {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
+    })
 });
 
 const PORT = 80;
